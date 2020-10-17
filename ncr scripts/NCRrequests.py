@@ -61,7 +61,7 @@ def getTransactions(accountID):
         }
 
         response = requests.request("GET", url, headers=headers, data = payload)
-        try:
+        try: #keep trying to make request until we dont get an error code
             if response.json()['code'] == "CMN_90000":
                 print('need to make request again')
         except:
@@ -69,10 +69,23 @@ def getTransactions(accountID):
     return response.json()
 
 
-print(getTransactions(getCheckingAccount("HACKATHONUSER002")))
+# print(getTransactions(getCheckingAccount("HACKATHONUSER002")))
 
-def listPastTransactions():
+def listPastTransactions(user):
     #implement method to list all transactions cleanly in a listPastTransactions
     #only withdrawls
     # probably transaction number, date, memo, description, amount
     #return list of jsons with just that
+    transactionList = getTransactions(getCheckingAccount(user))['transactions']
+    finalList = [{'transactionNumber' : 0, 'date' : '01/01/2020', 'memo' : 'Transaction Memo', 'description' : 'Transaction Description', 'amount' : 0}]
+    for x in transactionList:
+        temp = {}
+        temp['transactionNumber'] = int(x['transactionNumber'])
+        temp['date'] = x['transactionDate']
+        temp['memo'] = x['memo']
+        temp['description'] = x['description']
+        temp['amount'] = float(x['amount']['amount'])
+        finalList.insert(0, temp)
+    return finalList
+
+print(listPastTransactions("HACKATHONUSER002"))
