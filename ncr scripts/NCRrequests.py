@@ -7,8 +7,8 @@
 # @return The output of this action, which must be a JSON object.
 #
 #
-import sys
 import requests
+from geopy.geocoders import Nominatim
 
 
 class NCRrequests:
@@ -134,14 +134,21 @@ class NCRrequests:
         temp = {'name' : stock_name, 'points' : points}
         self.investments.append(temp)
 
+    def find_closest_foodbank(self, address):
+        geolocator = Nominatim(user_agent="foodBankLocator")
+        location = geolocator.geocode(address)
+        coordinates = (location.latitude, location.longitude)
+        print(location.address)
+        print(coordinates)
 
 
 def main(dict):
-    ncr_req = NCRrequests("HACKATHONUSER001")
+    ncr_req = NCRrequests("HACKATHONUSER005")
     # data = ncr_req.listPastTransactions()
     # print(data)
     data = ncr_req.returnUserObject()
     print(data)
+    ncr_req.find_closest_foodbank("Clough Undergraduate Learning Commons")
     return {'message': data}
 
 #main({})
