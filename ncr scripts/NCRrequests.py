@@ -1,3 +1,13 @@
+#
+#
+# main() will be run when you invoke this action
+#
+# @param Cloud Functions actions accept a single parameter, which must be a JSON object.
+#
+# @return The output of this action, which must be a JSON object.
+#
+#
+import sys
 import requests
 
 def getNCRAccessToken():
@@ -86,6 +96,10 @@ def listPastTransactions(user):
         temp['description'] = x['description']
         temp['amount'] = float(x['amount']['amount'])
         finalList.insert(0, temp)
+    finalList.pop()
     return finalList
+    
+def main(dict):
+    data = listPastTransactions("HACKATHONUSER002")
 
-print(listPastTransactions("HACKATHONUSER002"))
+    return { 'message': data }
