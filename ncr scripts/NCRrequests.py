@@ -48,7 +48,7 @@ def getAccountsOfUser(user):
     return response.json()
 
 # print(getAccountsOfUser("HACKATHONUSER003"))
-def getCheckingAccount(user):
+def getCheckingAccountId(user):
     accounts = getAccountsOfUser(user)['accounts']
     id = None
     for x in accounts:
@@ -57,6 +57,23 @@ def getCheckingAccount(user):
     return id
 
 # print(getCheckingAccount("HACKATHONUSER002"))
+
+def getCheckingAccount(user):
+    accounts = getAccountsOfUser(user)['accounts']
+    account = None
+    for x in accounts:
+        if x['type']['value'] == "CHECKING":
+            account = x
+            break
+    finalAccount = {}
+    finalAccount['description'] = account['description']
+    finalAccount['accountNumber'] = account['accountNumber']
+    finalAccount['type'] = 'CHECKING'
+    finalAccount['currentBalance'] = float(account['currentBalance']['amount'])
+    finalAccount['interestRate'] = float(account['interestRate'])
+    return finalAccount
+
+print(getCheckingAccount("HACKATHONUSER002"))
 
 
 def getTransactions(accountID):
@@ -79,14 +96,14 @@ def getTransactions(accountID):
     return response.json()
 
 
-# print(getTransactions(getCheckingAccount("HACKATHONUSER002")))
+print(getTransactions(getCheckingAccount("HACKATHONUSER002")))
 
 def listPastTransactions(user):
     #implement method to list all transactions cleanly in a listPastTransactions
     #only withdrawls
     # probably transaction number, date, memo, description, amount
     #return list of jsons with just that
-    transactionList = getTransactions(getCheckingAccount(user))['transactions']
+    transactionList = getTransactions(getCheckingAccountId(user))['transactions']
     finalList = [{'transactionNumber' : 0, 'date' : '01/01/2020', 'memo' : 'Transaction Memo', 'description' : 'Transaction Description', 'amount' : 0}]
     for x in transactionList:
         temp = {}
@@ -98,8 +115,7 @@ def listPastTransactions(user):
         finalList.insert(0, temp)
     finalList.pop()
     return finalList
-    
+
 def main(dict):
     data = listPastTransactions("HACKATHONUSER002")
-
     return { 'message': data }
