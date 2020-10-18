@@ -9,6 +9,8 @@
 #
 import requests
 from geopy.geocoders import Nominatim
+import googlemaps
+from googlemaps import places
 
 
 class NCRrequests:
@@ -138,6 +140,9 @@ class NCRrequests:
         geolocator = Nominatim(user_agent="foodBankLocator")
         location = geolocator.geocode(address)
         coordinates = (location.latitude, location.longitude)
+        #client = googlemaps.Client(key='AIzaSyCu21ZbDkSjU6w5MIIkA8XM2txf8b9pqjA')
+        #nearby_banks = places.places_nearby(client=client, location=coordinates, radius=50, keyword="food bank")
+        #print(nearby_banks)
         print(location.address)
         print(coordinates)
 
@@ -151,4 +156,5 @@ def main(dict):
     ncr_req.find_closest_foodbank("Clough Undergraduate Learning Commons")
     return {'message': data}
 
-#main({}) uncomment to test code
+#uncoment to test data
+main({})
