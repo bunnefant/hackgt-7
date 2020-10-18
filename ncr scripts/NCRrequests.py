@@ -11,6 +11,7 @@ import requests
 from geopy.geocoders import Nominatim
 import googlemaps
 from googlemaps import places
+import config
 
 
 class NCRrequests:
@@ -140,7 +141,7 @@ class NCRrequests:
         geolocator = Nominatim(user_agent="foodBankLocator")
         location = geolocator.geocode(address)
         coordinates = (location.latitude, location.longitude)
-        client = googlemaps.Client(key='AIzaSyCu21ZbDkSjU6w5MIIkA8XM2txf8b9pqjA')
+        client = googlemaps.Client(key=config.googleKey)
         nearby_banks = places.places_nearby(client=client, location=coordinates, radius=24140, keyword='food bank')
         food_bank_list = []
         for foodbank in nearby_banks['results']:
