@@ -25,9 +25,6 @@ def accountSetUp(username, password):
     userDoc['userData'] = {} #replace this later with user object akshay makes
     userDoc.save()
 
-def saveImage():
-    return None
-
 
 
 def main(dict):
