@@ -138,32 +138,49 @@ def analyzeTicker(tickers):
 
     data = performance.json()
 
+    temp = ['20201012']
+    x = dt.datetime.strptime(temp[0], '%Y%m%d').date().strftime('%b %Y')
+    print(x)
+    json1 = 0
+    json2 = 0
+    json3 = 0
     for n in range(0, len(tickers)):
         x = []
         y = []
         for key in data['resultMap']['RETURNS'][n]['returnsMap']:
-            x.append(dt.datetime.strptime(key, '%Y%m%d').date())
+            x.append(dt.datetime.strptime(
+                key, '%Y%m%d').date().strftime('%b %Y'))
             y.append(data['resultMap']['RETURNS'][n]
                      ['returnsMap'][key]['level'])
+        if n == 0:
+            json1 = {'x': x, 'y': y}
+        if n == 1:
+            json2 = {'x': x, 'y': y}
+        if n == 2:
+            json3 = {'x': x, 'y': y}
 
-        # print(len(x))
-        # print(x[0])
-        # print(len(y))
-        # print(y[0])
+    # print(len(x))
+    # print(x[0])
+    # print(len(y))
+    # print(y[0])
 
-        plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b %Y'))
+    # plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b %Y'))
 
-        plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=365))
-        plt.plot(x, y)
-        plt.gcf().autofmt_xdate()
-        plt.ylabel('Level')
-        plt.title(f'{tickers[n]} Level Chart')
-        plt.savefig(f'{tickers[n]}.png')
-        plt.clf()
-        # plt.show()
+    # plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=365))
+    # plt.plot(x, y)
+    # plt.gcf().autofmt_xdate()
+    # plt.ylabel('Level')
+    # plt.title(f'{tickers[n]} Level Chart')
+    # plt.savefig(f'{tickers[n]}.png')
+    # plt.clf()
+    # plt.show()
 
     print('It took ' + str(t.perf_counter() - beginning) + ' seconds.')
+    json1 = json.dumps(json1)
+    json2 = json.dumps(json2)
+    json3 = json.dumps(json3)
+    return json1, json2, json3
 
 
-dd = getAdvice('sports', 100, 1, 1)
-analyzeTicker(dd)
+#dd = getAdvice('sports', 100, 1, 1)
+analyzeTicker(['EHC', 'EVDY', 'AAPL'])
