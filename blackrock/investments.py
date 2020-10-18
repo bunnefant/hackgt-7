@@ -3,6 +3,9 @@ import json
 import numpy as np
 import math
 import time as t
+import datetime as dt
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 
 
 def getAdvice(keyword, rows, time, risk):
@@ -117,4 +120,50 @@ def getAdvice(keyword, rows, time, risk):
     return(best_tickers)
 
 
-getAdvice('health', 60, 2, 1)
+def analyzeTicker(tickers):
+    beginning = t.perf_counter()
+    # get data for each possible investment
+    performanceData_url = "https://www.blackrock.com/tools/hackathon/performance"
+
+    ticker_list = ','.join(tickers)
+
+    parameters = {
+        'identifiers': ticker_list
+    }
+
+    performance = requests.get(performanceData_url, params=parameters)
+    # debug statement
+    if performance.status_code == 200:
+        print('Call to performance is successful')
+
+    data = performance.json()
+
+    for n in range(0, len(tickers)):
+        x = []
+        y = []
+        for key in data['resultMap']['RETURNS'][n]['returnsMap']:
+            x.append(dt.datetime.strptime(key, '%Y%m%d').date())
+            y.append(data['resultMap']['RETURNS'][n]
+                     ['returnsMap'][key]['level'])
+
+        # print(len(x))
+        # print(x[0])
+        # print(len(y))
+        # print(y[0])
+
+        plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b %Y'))
+
+        plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=365))
+        plt.plot(x, y)
+        plt.gcf().autofmt_xdate()
+        plt.ylabel('Level')
+        plt.title(f'{tickers[n]} Level Chart')
+        plt.savefig(f'{tickers[n]}.png')
+        plt.clf()
+        # plt.show()
+
+    print('It took ' + str(t.perf_counter() - beginning) + ' seconds.')
+
+
+#getAdvice('health', 60, 2, 1)
+analyzeTicker(['EHC', 'AHSBX', 'EVDY'])
