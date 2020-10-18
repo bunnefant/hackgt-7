@@ -3,7 +3,15 @@ import requests
 from cloudant.client import Cloudant
 
 
+import subprocess
+# import sys
 import config
+def install(package):
+    subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+
+install('geopy')
+install('googlemaps')
+
 from geopy.geocoders import Nominatim
 import googlemaps
 from googlemaps import places
@@ -20,22 +28,8 @@ def getUserAddress():
     print(userDoc)
     return userDoc['userData']['address']
 
-print(getUserAddress())
-
-def setAddress(address):
-    client = Cloudant.iam("d02a0070-4a25-4e81-b712-a8e6c38a8863-bluemix", "0CpvlhxnS58tIZMsdu4QuUqw4bai6t1EYcJAv4Mo4lnI")
-    client.connect()
-    database_name = "user_db"
-    # print(client.all_dbs())
-    db = client[database_name] #open database
-    print(db)
-    userDoc = db["user1"]
-    userDoc['userData']['address'] = address
-    userDoc.save()
-    return {'message' : 'updated'}
-
-# setAddress("Clough Undergraduate Learning Commons")
 # print(getUserAddress())
+
 
 def find_closest_foodbank(address):
     geolocator = Nominatim(user_agent="foodBankLocator")
@@ -51,7 +45,15 @@ def find_closest_foodbank(address):
     print(food_bank_list)
     return food_bank_list
 
-
+def getBankInfo():
+    client = Cloudant.iam("d02a0070-4a25-4e81-b712-a8e6c38a8863-bluemix", "0CpvlhxnS58tIZMsdu4QuUqw4bai6t1EYcJAv4Mo4lnI")
+    client.connect()
+    database_name = "user_db"
+    # print(client.all_dbs())
+    db = client[database_name] #open database
+    # print(db)
+    userDoc = db["user1"]
+    return userDoc['userData']['accountInformation']
 
 def main(dict):
     if dict['type'] == 'investment':
@@ -60,6 +62,15 @@ def main(dict):
     elif dict['type'] == 'food_bank':
         print('hello')
         address = getUserAddress()
-        print(find_closest_foodbank(address))
+        list = find_closest_foodbank(address)
+        return {'output' : list}
+    elif dict['type'] == 'bank_info':
+        return getBankInfo()
+    elif dict['type'] == 'billing':
+        ## edit billing or display current billing
+        print('hello')
+    elif dict['type'] == 'budget':
+        ##do stuff with budget, return, change ...
+        print('budget')
 
-main({'type' : 'food_bank'})
+# main({'type' : 'food_bank'})
