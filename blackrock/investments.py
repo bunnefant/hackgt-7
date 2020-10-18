@@ -165,5 +165,5 @@ def analyzeTicker(tickers):
     print('It took ' + str(t.perf_counter() - beginning) + ' seconds.')
 
 
-#getAdvice('health', 60, 2, 1)
-analyzeTicker(['EHC', 'AHSBX', 'EVDY'])
+dd = getAdvice('sports', 100, 1, 1)
+analyzeTicker(dd)
